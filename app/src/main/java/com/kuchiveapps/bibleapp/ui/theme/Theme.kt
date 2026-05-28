@@ -1,4 +1,4 @@
-package com.saiapps.bibleapp.ui.theme
+package com.kuchiveapps.bibleapp.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

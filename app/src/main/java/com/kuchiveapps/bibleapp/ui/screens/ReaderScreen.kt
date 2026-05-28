@@ -1,4 +1,4 @@
-package com.saiapps.bibleapp.ui.screens
+package com.kuchiveapps.bibleapp.ui.screens
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -63,10 +63,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.saiapps.bibleapp.R
-import com.saiapps.bibleapp.ui.theme.LoraFamily
-import com.saiapps.bibleapp.ui.viewmodel.BibleViewModel
-import com.saiapps.bibleapp.ui.viewmodel.VerseDisplay
+import com.kuchiveapps.bibleapp.R
+import com.kuchiveapps.bibleapp.ui.theme.LoraFamily
+import com.kuchiveapps.bibleapp.ui.viewmodel.BibleViewModel
+import com.kuchiveapps.bibleapp.ui.viewmodel.VerseDisplay
 
 @Composable
 fun ReaderScreen(viewModel: BibleViewModel, onBack: () -> Unit) {

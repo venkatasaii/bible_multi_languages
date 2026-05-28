@@ -1,4 +1,4 @@
-package com.saiapps.bibleapp.ui.screens
+package com.kuchiveapps.bibleapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,10 +46,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.saiapps.bibleapp.R
-import com.saiapps.bibleapp.data.Book
-import com.saiapps.bibleapp.data.Testament
-import com.saiapps.bibleapp.ui.viewmodel.BibleViewModel
+import com.kuchiveapps.bibleapp.R
+import com.kuchiveapps.bibleapp.data.Book
+import com.kuchiveapps.bibleapp.data.Testament
+import com.kuchiveapps.bibleapp.ui.viewmodel.BibleViewModel
 
 @Composable
 fun BooksScreen(viewModel: BibleViewModel, onOpenBook: (Int) -> Unit) {

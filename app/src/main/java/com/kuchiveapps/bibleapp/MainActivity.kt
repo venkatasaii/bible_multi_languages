@@ -1,4 +1,4 @@
-package com.saiapps.bibleapp
+package com.kuchiveapps.bibleapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.saiapps.bibleapp.ui.screens.BooksScreen
-import com.saiapps.bibleapp.ui.screens.ReaderScreen
-import com.saiapps.bibleapp.ui.theme.BibleTheme
-import com.saiapps.bibleapp.ui.viewmodel.BibleViewModel
+import com.kuchiveapps.bibleapp.ui.screens.BooksScreen
+import com.kuchiveapps.bibleapp.ui.screens.ReaderScreen
+import com.kuchiveapps.bibleapp.ui.theme.BibleTheme
+import com.kuchiveapps.bibleapp.ui.viewmodel.BibleViewModel
 
 class MainActivity : ComponentActivity() {
 

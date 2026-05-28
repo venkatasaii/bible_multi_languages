@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.saiapps.bibleapp"
+    namespace = "com.kuchiveapps.bibleapp"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.saiapps.bibleapp"
+        applicationId = "com.kuchiveapps.bibleapp"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

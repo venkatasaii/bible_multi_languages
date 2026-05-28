@@ -1,8 +1,8 @@
-package com.saiapps.bibleapp
+package com.kuchiveapps.bibleapp
 
 import android.app.Application
-import com.saiapps.bibleapp.data.BibleRepository
-import com.saiapps.bibleapp.translate.TranslationManager
+import com.kuchiveapps.bibleapp.data.BibleRepository
+import com.kuchiveapps.bibleapp.translate.TranslationManager
 
 class BibleApp : Application() {
     lateinit var repository: BibleRepository

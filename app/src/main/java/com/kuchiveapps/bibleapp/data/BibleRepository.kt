@@ -1,4 +1,4 @@
-package com.saiapps.bibleapp.data
+package com.kuchiveapps.bibleapp.data
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers

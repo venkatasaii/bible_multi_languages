@@ -1,4 +1,4 @@
-package com.saiapps.bibleapp.data
+package com.kuchiveapps.bibleapp.data
 
 import kotlinx.serialization.Serializable
 

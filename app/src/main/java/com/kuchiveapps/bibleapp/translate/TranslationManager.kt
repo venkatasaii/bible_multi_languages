@@ -1,4 +1,4 @@
-package com.saiapps.bibleapp.translate
+package com.kuchiveapps.bibleapp.translate
 
 import com.google.android.gms.tasks.Tasks
 import com.google.mlkit.common.model.DownloadConditions

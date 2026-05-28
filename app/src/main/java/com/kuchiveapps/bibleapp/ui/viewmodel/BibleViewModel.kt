@@ -1,14 +1,14 @@
-package com.saiapps.bibleapp.ui.viewmodel
+package com.kuchiveapps.bibleapp.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.saiapps.bibleapp.data.BibleRepository
-import com.saiapps.bibleapp.data.BibleVersion
-import com.saiapps.bibleapp.data.Book
-import com.saiapps.bibleapp.data.ChapterJson
-import com.saiapps.bibleapp.translate.SupportedLanguage
-import com.saiapps.bibleapp.translate.TranslationManager
+import com.kuchiveapps.bibleapp.data.BibleRepository
+import com.kuchiveapps.bibleapp.data.BibleVersion
+import com.kuchiveapps.bibleapp.data.Book
+import com.kuchiveapps.bibleapp.data.ChapterJson
+import com.kuchiveapps.bibleapp.translate.SupportedLanguage
+import com.kuchiveapps.bibleapp.translate.TranslationManager
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
