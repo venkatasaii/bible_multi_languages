@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kuchiveapps.bibleapp.R
+import com.kuchiveapps.bibleapp.ads.BannerAd
 import com.kuchiveapps.bibleapp.data.Book
 import com.kuchiveapps.bibleapp.data.Testament
 import com.kuchiveapps.bibleapp.ui.viewmodel.BibleViewModel
@@ -64,20 +65,25 @@ fun BooksScreen(viewModel: BibleViewModel, onOpenBook: (Int) -> Unit) {
         }
         val ot = state.books.filter { it.testament == Testament.OLD }
         val nt = state.books.filter { it.testament == Testament.NEW }
-        val insets = WindowInsets.statusBars.union(WindowInsets.navigationBars).asPaddingValues()
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                top = insets.calculateTopPadding(),
-                bottom = insets.calculateBottomPadding() + 24.dp
-            )
-        ) {
-            item { Hero(viewModel) }
-            item { SectionTitle(stringResource(R.string.old_testament)) }
-            items(ot, key = { it.index }) { BookRow(it, onOpenBook) }
-            item { Spacer(Modifier.height(24.dp)) }
-            item { SectionTitle(stringResource(R.string.new_testament)) }
-            items(nt, key = { it.index }) { BookRow(it, onOpenBook) }
+        val statusTop = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+        val navBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+        Column(Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+                contentPadding = PaddingValues(
+                    top = statusTop,
+                    bottom = 16.dp
+                )
+            ) {
+                item { Hero(viewModel) }
+                item { SectionTitle(stringResource(R.string.old_testament)) }
+                items(ot, key = { it.index }) { BookRow(it, onOpenBook) }
+                item { Spacer(Modifier.height(24.dp)) }
+                item { SectionTitle(stringResource(R.string.new_testament)) }
+                items(nt, key = { it.index }) { BookRow(it, onOpenBook) }
+            }
+            BannerAd()
+            Spacer(Modifier.height(navBottom))
         }
     }
 }

@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onOpenBook = { bookIndex ->
                                     viewModel.openChapter(bookIndex, 1)
+                                    (application as BibleApp).ads.maybeShowInterstitial(this@MainActivity)
                                     nav.navigate("reader")
                                 }
                             )
