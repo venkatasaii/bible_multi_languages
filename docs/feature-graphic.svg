@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 500" width="1024" height="500">
+  <defs>
+    <radialGradient id="bg" cx="700" cy="220" r="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFDF6E8"/>
+      <stop offset="1" stop-color="#FFE7D3A8"/>
+    </radialGradient>
+    <linearGradient id="page" x1="780" y1="160" x2="940" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFF8E7"/>
+      <stop offset="1" stop-color="#FFE7D3A8"/>
+    </linearGradient>
+    <linearGradient id="ribbon" x1="900" y1="160" x2="920" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFE6A8"/>
+      <stop offset="1" stop-color="#FFB58A2E"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1024" height="500" fill="url(#bg)"/>
+
+  <!-- Title block (left side) -->
+  <text x="80" y="200"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="78" font-weight="700" letter-spacing="6"
+        fill="#8A6322">HOLY BIBLE</text>
+
+  <!-- Ornament divider -->
+  <line x1="80" y1="232" x2="200" y2="232" stroke="#B8893F" stroke-width="2"/>
+  <circle cx="218" cy="232" r="5" fill="#B8893F"/>
+  <line x1="236" y1="232" x2="356" y2="232" stroke="#B8893F" stroke-width="2"/>
+
+  <!-- Tagline -->
+  <text x="80" y="290"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="34" font-weight="400" font-style="italic"
+        fill="#1F1A12">Read offline. Translate any verse.</text>
+
+  <!-- Subtext -->
+  <text x="80" y="345"
+        font-family="-apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="20" font-weight="400"
+        fill="#55493A">King James Version  ·  14 languages  ·  No account required</text>
+
+  <!-- Decorative book on the right (scaled up from icon) -->
+  <g transform="translate(640,100) scale(3.6)">
+    <path d="M30,72 Q54,82 78,72 L78,76 Q54,86 30,76 Z" fill="#000000" fill-opacity="0.18"/>
+    <path d="M30,40 L54,46 L54,76 L30,72 Z" fill="url(#page)"/>
+    <path d="M54,46 L78,40 L78,72 L54,76 Z" fill="url(#page)"/>
+    <path d="M30,40 L54,46 L78,40 M30,72 L54,76 L78,72 M54,46 L54,76"
+          stroke="#C79A4A" stroke-width="0.8" fill="none"/>
+    <path d="M34,52 L50,54 M34,56 L50,58 M34,60 L48,62 M34,64 L50,66"
+          stroke="#AB8444" stroke-width="0.7" stroke-opacity="0.55" fill="none"/>
+    <path d="M58,54 L74,52 M58,58 L74,56 M68,62 L74,60 M58,66 L74,64"
+          stroke="#AB8444" stroke-width="0.7" stroke-opacity="0.55" fill="none"/>
+    <path d="M62.5,49 L65.5,49 L65.5,52.5 L68.5,52.5 L68.5,55.5 L65.5,55.5 L65.5,60 L62.5,60 L62.5,55.5 L59.5,55.5 L59.5,52.5 L62.5,52.5 Z"
+          fill="#8A5A1B"/>
+    <path d="M70,40 L74,40 L74,86 L72,82 L70,86 Z" fill="url(#ribbon)"/>
+    <line x1="54" y1="46" x2="54" y2="76" stroke="#8A6322" stroke-width="0.6"/>
+  </g>
+
+  <!-- Footer -->
+  <text x="80" y="460"
+        font-family="-apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="16" font-weight="500" letter-spacing="2"
+        fill="#8A6322">KUCHIVE APPS</text>
+</svg>

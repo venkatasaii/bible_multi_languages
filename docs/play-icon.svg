@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="512" height="512">
+  <defs>
+    <!-- Warm paper-gold radial background -->
+    <radialGradient id="bg" cx="54" cy="44" r="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFDF6E8"/>
+      <stop offset="1" stop-color="#FFB07A2E"/>
+    </radialGradient>
+    <!-- Subtle bottom vignette for depth -->
+    <linearGradient id="vignette" x1="0" y1="108" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#000000" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Cream page gradient (left + right) -->
+    <linearGradient id="page" x1="30" y1="40" x2="78" y2="76" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFF8E7"/>
+      <stop offset="1" stop-color="#FFE7D3A8"/>
+    </linearGradient>
+    <!-- Gold ribbon gradient -->
+    <linearGradient id="ribbon" x1="70" y1="40" x2="74" y2="86" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFE6A8"/>
+      <stop offset="1" stop-color="#FFB58A2E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded background so Play renders it as a proper icon -->
+  <rect width="108" height="108" rx="22" ry="22" fill="url(#bg)"/>
+  <rect width="108" height="108" rx="22" ry="22" fill="url(#vignette)"/>
+
+  <!-- Drop shadow under book -->
+  <path d="M30,72 Q54,82 78,72 L78,76 Q54,86 30,76 Z" fill="#000000" fill-opacity="0.2"/>
+
+  <!-- Left page -->
+  <path d="M30,40 L54,46 L54,76 L30,72 Z" fill="url(#page)"/>
+  <!-- Right page -->
+  <path d="M54,46 L78,40 L78,72 L54,76 Z" fill="url(#page)"/>
+
+  <!-- Gilded page edges -->
+  <path d="M30,40 L54,46 L78,40 M30,72 L54,76 L78,72 M54,46 L54,76"
+        stroke="#FFC79A4A" stroke-width="0.8" fill="none"/>
+
+  <!-- Text lines on the left page -->
+  <path d="M34,52 L50,54 M34,56 L50,58 M34,60 L48,62 M34,64 L50,66"
+        stroke="#FFAB8444" stroke-width="0.7" stroke-opacity="0.55" fill="none"/>
+
+  <!-- Text lines on the right page (offset to clear the cross) -->
+  <path d="M58,54 L74,52 M58,58 L74,56 M68,62 L74,60 M58,66 L74,64"
+        stroke="#FFAB8444" stroke-width="0.7" stroke-opacity="0.55" fill="none"/>
+
+  <!-- Cross emblem on the right page -->
+  <path d="M62.5,49 L65.5,49 L65.5,52.5 L68.5,52.5 L68.5,55.5 L65.5,55.5 L65.5,60 L62.5,60 L62.5,55.5 L59.5,55.5 L59.5,52.5 L62.5,52.5 Z"
+        fill="#FF8A5A1B"/>
+
+  <!-- Gold ribbon bookmark -->
+  <path d="M70,40 L74,40 L74,86 L72,82 L70,86 Z" fill="url(#ribbon)"/>
+
+  <!-- Book spine highlight -->
+  <line x1="54" y1="46" x2="54" y2="76" stroke="#FF8A6322" stroke-width="0.6"/>
+</svg>
