@@ -38,6 +38,7 @@ data class BibleVersion(
 data class Book(
     val index: Int,
     val name: String,
+    val abbreviation: String,
     val testament: Testament,
     val chapterCount: Int
 )

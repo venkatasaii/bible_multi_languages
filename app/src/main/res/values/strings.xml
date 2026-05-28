@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Bible</string>
+    <string name="app_name">Holy Bible</string>
+    <string name="tagline">Read &amp; Translate</string>
     <string name="title_books">Books</string>
     <string name="title_reader">Reader</string>
     <string name="version">Version</string>

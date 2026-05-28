@@ -1,5 +1,11 @@
 package com.saiapps.bibleapp.ui.screens
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,28 +16,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,103 +47,143 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.saiapps.bibleapp.R
+import com.saiapps.bibleapp.ui.theme.LoraFamily
 import com.saiapps.bibleapp.ui.viewmodel.BibleViewModel
+import com.saiapps.bibleapp.ui.viewmodel.VerseDisplay
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReaderScreen(viewModel: BibleViewModel, onBack: () -> Unit) {
     val state by viewModel.reader.collectAsState()
+    val listState = rememberLazyListState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text(state.bookName, style = MaterialTheme.typography.titleMedium)
-                        Text(
-                            stringResource(R.string.chapter, state.chapterNumber),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
-                    }
-                },
-                actions = { LanguageDropdown(viewModel) }
-            )
-        },
-        bottomBar = { ChapterNavBar(viewModel) }
-    ) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding)) {
+    LaunchedEffect(state.bookIndex, state.chapterNumber) {
+        listState.scrollToItem(0)
+    }
+
+    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+        Column(Modifier.fillMaxSize()) {
+            TopBar(viewModel, onBack)
             if (state.translating) {
-                LinearProgressIndicator(Modifier.fillMaxWidth())
+                LinearProgressIndicator(
+                    Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             }
             state.error?.let {
                 Text(
                     text = it,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
                 )
             }
-            if (state.loading) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                LazyColumn(
-                    contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    items(state.verses, key = { it.number }) { v ->
-                        Row(verticalAlignment = Alignment.Top) {
-                            Text(
-                                text = v.number.toString(),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(end = 8.dp, top = 2.dp)
-                            )
-                            Column {
-                                Text(
-                                    text = v.original,
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
-                                v.translated?.let { t ->
-                                    Spacer(Modifier.height(4.dp))
-                                    Text(
-                                        text = t,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        fontStyle = FontStyle.Italic
-                                    )
+            Box(Modifier.weight(1f)) {
+                if (state.loading) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    }
+                } else {
+                    AnimatedContent(
+                        targetState = state.bookIndex to state.chapterNumber,
+                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                        label = "chapter"
+                    ) { _ ->
+                        LazyColumn(
+                            state = listState,
+                            contentPadding = PaddingValues(horizontal = 26.dp, vertical = 12.dp)
+                        ) {
+                            item { ChapterHeader(state.bookName, state.chapterNumber) }
+                            item {
+                                VerseParagraph(state.verses, translated = false)
+                            }
+                            if (state.verses.any { it.translated != null }) {
+                                item { Spacer(Modifier.height(20.dp)) }
+                                item { TranslationDivider() }
+                                item { Spacer(Modifier.height(16.dp)) }
+                                item {
+                                    VerseParagraph(state.verses, translated = true)
                                 }
                             }
+                            item { Spacer(Modifier.height(32.dp)) }
                         }
                     }
                 }
             }
+            BottomNav(viewModel)
         }
     }
 }
 
 @Composable
-private fun LanguageDropdown(viewModel: BibleViewModel) {
+private fun TopBar(viewModel: BibleViewModel, onBack: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onBack) {
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = stringResource(R.string.back),
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+        }
+        Spacer(Modifier.weight(1f))
+        LanguagePill(viewModel)
+        Spacer(Modifier.width(8.dp))
+    }
+}
+
+@Composable
+private fun LanguagePill(viewModel: BibleViewModel) {
     val state by viewModel.reader.collectAsState()
     var expanded by remember { mutableStateOf(false) }
     val current = viewModel.languages.firstOrNull { it.code == state.targetLanguage }
     Box {
-        TextButton(onClick = { expanded = true }) {
-            Icon(Icons.Filled.Translate, contentDescription = stringResource(R.string.translate_to))
-            Text("  ${current?.displayName ?: state.targetLanguage}")
-            Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            modifier = Modifier.clickable { expanded = true }
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+            ) {
+                Icon(
+                    Icons.Filled.Translate,
+                    contentDescription = stringResource(R.string.translate_to),
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = current?.displayName ?: state.targetLanguage,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Icon(
+                    Icons.Filled.ExpandMore,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp).padding(start = 2.dp)
+                )
+            }
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             viewModel.languages.forEach { lang ->
@@ -152,26 +200,184 @@ private fun LanguageDropdown(viewModel: BibleViewModel) {
 }
 
 @Composable
-private fun ChapterNavBar(viewModel: BibleViewModel) {
-    val state by viewModel.reader.collectAsState()
-    HorizontalDivider()
+private fun ChapterHeader(bookName: String, chapterNumber: Int) {
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = bookName.uppercase(),
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(10.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            HorizontalDivider(
+                modifier = Modifier.width(40.dp),
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+            )
+            Box(
+                Modifier
+                    .padding(horizontal = 10.dp)
+                    .size(5.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+            )
+            HorizontalDivider(
+                modifier = Modifier.width(40.dp),
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+            )
+        }
+        Spacer(Modifier.height(10.dp))
+        Text(
+            text = stringResource(R.string.chapter, chapterNumber),
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(20.dp))
+    }
+}
+
+@Composable
+private fun VerseParagraph(verses: List<VerseDisplay>, translated: Boolean) {
+    if (verses.isEmpty()) return
+    val primary = MaterialTheme.colorScheme.primary
+    val text = remember(verses, translated) {
+        buildAnnotatedString {
+            verses.forEachIndexed { idx, v ->
+                val body = if (translated) v.translated ?: v.original else v.original
+                if (idx == 0) {
+                    // Drop cap: large first letter for verse 1.
+                    val first = body.firstOrNull()?.toString() ?: ""
+                    val rest = if (body.isNotEmpty()) body.substring(1) else ""
+                    withStyle(
+                        SpanStyle(
+                            color = primary,
+                            fontSize = 56.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = LoraFamily
+                        )
+                    ) { append(first) }
+                    append(rest)
+                } else {
+                    append(' ')
+                    withStyle(
+                        SpanStyle(
+                            color = primary,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            baselineShift = BaselineShift.Superscript
+                        )
+                    ) { append(" ${v.number} ") }
+                    append(body)
+                }
+            }
+        }
+    }
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyLarge.copy(
+            fontStyle = if (translated) FontStyle.Italic else FontStyle.Normal,
+            color = if (translated) MaterialTheme.colorScheme.onSurfaceVariant
+            else MaterialTheme.colorScheme.onBackground
+        )
+    )
+}
+
+@Composable
+private fun TranslationDivider() {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        HorizontalDivider(
+            modifier = Modifier.width(50.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+        )
+        Text(
+            text = "TRANSLATION",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 10.dp)
+        )
+        HorizontalDivider(
+            modifier = Modifier.width(50.dp),
+            thickness = 1.dp,
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+        )
+    }
+}
+
+@Composable
+private fun BottomNav(viewModel: BibleViewModel) {
+    val state by viewModel.reader.collectAsState()
+    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 8.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TextButton(onClick = { viewModel.previousChapter() }) {
-            Icon(Icons.Filled.ChevronLeft, contentDescription = null)
-            Text(stringResource(R.string.previous))
-        }
-        Text(
-            "${state.chapterNumber} / ${state.chapterCount}",
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+        NavButton(
+            label = stringResource(R.string.previous),
+            iconLeading = true,
+            onClick = { viewModel.previousChapter() }
         )
-        TextButton(onClick = { viewModel.nextChapter() }) {
-            Text(stringResource(R.string.next))
-            Icon(Icons.Filled.ChevronRight, contentDescription = null)
+        Text(
+            text = "${state.chapterNumber} / ${state.chapterCount}",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            fontWeight = FontWeight.SemiBold
+        )
+        NavButton(
+            label = stringResource(R.string.next),
+            iconLeading = false,
+            onClick = { viewModel.nextChapter() }
+        )
+    }
+}
+
+@Composable
+private fun NavButton(label: String, iconLeading: Boolean, onClick: () -> Unit) {
+    Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier.clickable(onClick = onClick)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+        ) {
+            if (iconLeading) {
+                Icon(
+                    Icons.Filled.ChevronLeft,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(Modifier.width(2.dp))
+            }
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.SemiBold
+            )
+            if (!iconLeading) {
+                Spacer(Modifier.width(2.dp))
+                Icon(
+                    Icons.Filled.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
         }
     }
 }

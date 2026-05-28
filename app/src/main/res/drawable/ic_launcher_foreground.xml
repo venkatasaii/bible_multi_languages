@@ -3,16 +3,89 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+
+    <!-- The Android adaptive-icon safe zone is the inner 66x66.
+         Everything below is centered roughly within 27..81 on each axis. -->
+
+    <!-- Drop shadow under the book -->
     <path
-        android:fillColor="#FFFBF7"
-        android:pathData="M30,28 L78,28 A6,6 0 0 1 84,34 L84,80 L30,80 A6,6 0 0 1 24,74 L24,34 A6,6 0 0 1 30,28 Z" />
+        android:fillColor="#33000000"
+        android:pathData="M30,72 Q54,82 78,72 L78,76 Q54,86 30,76 Z" />
+
+    <!-- Left page (cream) -->
     <path
-        android:strokeColor="#7E5A3C"
-        android:strokeWidth="2"
-        android:pathData="M54,30 L54,80" />
+        android:pathData="M30,40 L54,46 L54,76 L30,72 Z">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt"
+            name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="30" android:startY="40"
+                android:endX="54" android:endY="76"
+                android:startColor="#FFFFF8E7"
+                android:endColor="#FFE7D3A8" />
+        </aapt:attr>
+    </path>
+
+    <!-- Right page (cream) -->
     <path
-        android:strokeColor="#7E5A3C"
-        android:strokeWidth="2"
+        android:pathData="M54,46 L78,40 L78,72 L54,76 Z">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt"
+            name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="54" android:startY="46"
+                android:endX="78" android:endY="72"
+                android:startColor="#FFFFF8E7"
+                android:endColor="#FFE7D3A8" />
+        </aapt:attr>
+    </path>
+
+    <!-- Gilded page edges -->
+    <path
+        android:strokeColor="#FFC79A4A"
+        android:strokeWidth="0.8"
         android:fillColor="#00000000"
-        android:pathData="M48,46 L60,46 M54,40 L54,58" />
+        android:pathData="M30,40 L54,46 L78,40 M30,72 L54,76 L78,72 M54,46 L54,76" />
+
+    <!-- Text lines on the left page -->
+    <path
+        android:strokeColor="#FFAB8444"
+        android:strokeWidth="0.7"
+        android:strokeAlpha="0.55"
+        android:fillColor="#00000000"
+        android:pathData="M34,52 L50,54 M34,56 L50,58 M34,60 L48,62 M34,64 L50,66" />
+
+    <!-- Text lines on the right page (offset to clear the cross) -->
+    <path
+        android:strokeColor="#FFAB8444"
+        android:strokeWidth="0.7"
+        android:strokeAlpha="0.55"
+        android:fillColor="#00000000"
+        android:pathData="M58,54 L74,52 M58,58 L74,56 M68,62 L74,60 M58,66 L74,64" />
+
+    <!-- Cross emblem on the right page (top corner) -->
+    <path
+        android:fillColor="#FF8A5A1B"
+        android:pathData="M62.5,49 L65.5,49 L65.5,52.5 L68.5,52.5 L68.5,55.5 L65.5,55.5 L65.5,60 L62.5,60 L62.5,55.5 L59.5,55.5 L59.5,52.5 L62.5,52.5 Z" />
+
+    <!-- Gold ribbon bookmark -->
+    <path
+        android:pathData="M70,40 L74,40 L74,86 L72,82 L70,86 Z">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt"
+            name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="70" android:startY="40"
+                android:endX="74" android:endY="86"
+                android:startColor="#FFFFE6A8"
+                android:endColor="#FFB58A2E" />
+        </aapt:attr>
+    </path>
+
+    <!-- Book spine highlight -->
+    <path
+        android:strokeColor="#FF8A6322"
+        android:strokeWidth="0.6"
+        android:fillColor="#00000000"
+        android:pathData="M54,46 L54,76" />
 </vector>

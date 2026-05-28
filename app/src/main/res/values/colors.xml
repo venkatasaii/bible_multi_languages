@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ink">#1B1B1F</color>
-    <color name="paper">#FFFBF7</color>
-    <color name="accent">#7E5A3C</color>
+    <color name="paper">#FBF5EA</color>
+    <color name="paper_soft">#F2E9D6</color>
+    <color name="ink">#1F1A12</color>
+    <color name="gold">#B8893F</color>
+    <color name="gold_deep">#8A6322</color>
+    <color name="night">#15110B</color>
 </resources>

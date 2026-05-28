@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Biblia</string>
+    <string name="app_name">Santa Biblia</string>
+    <string name="tagline">Leer y traducir</string>
     <string name="title_books">Libros</string>
     <string name="title_reader">Lector</string>
     <string name="version">Versión</string>

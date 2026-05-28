@@ -39,11 +39,28 @@ class BibleRepository(private val context: Context) {
             Book(
                 index = idx,
                 name = b.name,
+                abbreviation = BOOK_ABBREVIATIONS.getOrElse(idx) { b.name.take(3) },
                 testament = if (b.testament.equals("OT", true) || b.testament.equals("old", true))
                     Testament.OLD else Testament.NEW,
                 chapterCount = b.chapters.size
             )
         }
+    }
+
+    companion object {
+        private val BOOK_ABBREVIATIONS = listOf(
+            // Old Testament (39)
+            "Gen", "Ex", "Lev", "Num", "Deut", "Josh", "Judg", "Ruth",
+            "1 Sa", "2 Sa", "1 Ki", "2 Ki", "1 Ch", "2 Ch", "Ezra", "Neh",
+            "Esth", "Job", "Ps", "Prov", "Eccl", "Song", "Isa", "Jer",
+            "Lam", "Ezek", "Dan", "Hos", "Joel", "Amos", "Obad", "Jonah",
+            "Mic", "Nah", "Hab", "Zeph", "Hag", "Zech", "Mal",
+            // New Testament (27)
+            "Matt", "Mark", "Luke", "John", "Acts", "Rom", "1 Co", "2 Co",
+            "Gal", "Eph", "Phil", "Col", "1 Th", "2 Th", "1 Ti", "2 Ti",
+            "Titus", "Phlm", "Heb", "Jas", "1 Pe", "2 Pe", "1 Jn", "2 Jn",
+            "3 Jn", "Jude", "Rev"
+        )
     }
 
     suspend fun chapter(versionId: String, bookIndex: Int, chapterNumber: Int): ChapterJson {
