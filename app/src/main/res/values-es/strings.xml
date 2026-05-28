@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Biblia</string>
+    <string name="title_books">Libros</string>
+    <string name="title_reader">Lector</string>
+    <string name="version">Versión</string>
+    <string name="translate_to">Traducir a</string>
+    <string name="translating">Traduciendo…</string>
+    <string name="downloading_language">Descargando modelo de idioma…</string>
+    <string name="translation_failed">Error de traducción</string>
+    <string name="show_original">Mostrar original</string>
+    <string name="chapter">Capítulo %1$d</string>
+    <string name="previous">Anterior</string>
+    <string name="next">Siguiente</string>
+    <string name="old_testament">Antiguo Testamento</string>
+    <string name="new_testament">Nuevo Testamento</string>
+    <string name="settings">Ajustes</string>
+    <string name="back">Atrás</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Bible</string>
+    <string name="title_books">Books</string>
+    <string name="title_reader">Reader</string>
+    <string name="version">Version</string>
+    <string name="translate_to">Translate to</string>
+    <string name="translating">Translating…</string>
+    <string name="downloading_language">Downloading language model…</string>
+    <string name="translation_failed">Translation failed</string>
+    <string name="show_original">Show original</string>
+    <string name="chapter">Chapter %1$d</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="old_testament">Old Testament</string>
+    <string name="new_testament">New Testament</string>
+    <string name="settings">Settings</string>
+    <string name="back">Back</string>
+</resources>
