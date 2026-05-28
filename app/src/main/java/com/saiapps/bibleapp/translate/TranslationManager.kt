@@ -43,11 +43,17 @@ class TranslationManager {
         }
     }
 
+    suspend fun ensureModel(source: String, target: String) =
+        withContext(Dispatchers.IO) {
+            if (source == target) return@withContext
+            val t = translator(source, target)
+            Tasks.await(t.downloadModelIfNeeded(DownloadConditions.Builder().build()))
+        }
+
     suspend fun translate(text: String, source: String, target: String): String =
         withContext(Dispatchers.IO) {
             if (source == target) return@withContext text
             val t = translator(source, target)
-            Tasks.await(t.downloadModelIfNeeded(DownloadConditions.Builder().build()))
             Tasks.await(t.translate(text))
         }
 

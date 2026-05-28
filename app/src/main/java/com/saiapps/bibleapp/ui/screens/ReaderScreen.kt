@@ -12,12 +12,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -34,7 +39,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -75,13 +79,31 @@ fun ReaderScreen(viewModel: BibleViewModel, onBack: () -> Unit) {
 
     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(Modifier.fillMaxSize()) {
+            Spacer(Modifier.windowInsetsPadding(WindowInsets.statusBars))
             TopBar(viewModel, onBack)
-            if (state.translating) {
-                LinearProgressIndicator(
-                    Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.surfaceVariant
-                )
+            if (state.downloadingModel || state.translating) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(horizontal = 20.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(14.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text(
+                        text = stringResource(
+                            if (state.downloadingModel) R.string.downloading_language
+                            else R.string.translating
+                        ),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
             state.error?.let {
                 Text(
@@ -124,6 +146,7 @@ fun ReaderScreen(viewModel: BibleViewModel, onBack: () -> Unit) {
                 }
             }
             BottomNav(viewModel)
+            Spacer(Modifier.windowInsetsPadding(WindowInsets.navigationBars))
         }
     }
 }
@@ -326,9 +349,13 @@ private fun BottomNav(viewModel: BibleViewModel) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val hasPrevious = state.chapterNumber > 1 || state.bookIndex > 0
+        val hasNext = state.chapterNumber < state.chapterCount ||
+                (state.bookIndex >= 0 && state.bookIndex < state.totalBooks - 1)
         NavButton(
             label = stringResource(R.string.previous),
             iconLeading = true,
+            enabled = hasPrevious && !state.loading,
             onClick = { viewModel.previousChapter() }
         )
         Text(
@@ -340,34 +367,39 @@ private fun BottomNav(viewModel: BibleViewModel) {
         NavButton(
             label = stringResource(R.string.next),
             iconLeading = false,
+            enabled = hasNext && !state.loading,
             onClick = { viewModel.nextChapter() }
         )
     }
 }
 
 @Composable
-private fun NavButton(label: String, iconLeading: Boolean, onClick: () -> Unit) {
+private fun NavButton(label: String, iconLeading: Boolean, enabled: Boolean, onClick: () -> Unit) {
     Surface(
+        onClick = onClick,
+        enabled = enabled,
         shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.clickable(onClick = onClick)
+        color = if (enabled) MaterialTheme.colorScheme.surfaceVariant
+                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)
         ) {
             if (iconLeading) {
                 Icon(
                     Icons.Filled.ChevronLeft,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = if (enabled) MaterialTheme.colorScheme.primary
+                           else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.width(2.dp))
             }
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = if (enabled) MaterialTheme.colorScheme.onBackground
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
                 fontWeight = FontWeight.SemiBold
             )
             if (!iconLeading) {
@@ -375,7 +407,8 @@ private fun NavButton(label: String, iconLeading: Boolean, onClick: () -> Unit) 
                 Icon(
                     Icons.Filled.ChevronRight,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = if (enabled) MaterialTheme.colorScheme.primary
+                           else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

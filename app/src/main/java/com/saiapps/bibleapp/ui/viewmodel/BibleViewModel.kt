@@ -9,6 +9,9 @@ import com.saiapps.bibleapp.data.Book
 import com.saiapps.bibleapp.data.ChapterJson
 import com.saiapps.bibleapp.translate.SupportedLanguage
 import com.saiapps.bibleapp.translate.TranslationManager
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,9 +31,11 @@ data class ReaderState(
     val bookName: String = "",
     val chapterNumber: Int = 1,
     val chapterCount: Int = 1,
+    val totalBooks: Int = 66,
     val verses: List<VerseDisplay> = emptyList(),
     val targetLanguage: String = "en",
     val translating: Boolean = false,
+    val downloadingModel: Boolean = false,
     val error: String? = null,
 )
 
@@ -88,6 +93,7 @@ class BibleViewModel(
                 bookName = book.name,
                 chapterNumber = chapterNumber,
                 chapterCount = book.chapterCount,
+                totalBooks = books.size,
                 verses = emptyList(),
                 error = null,
             )
@@ -127,24 +133,37 @@ class BibleViewModel(
         _reader.update { it.copy(targetLanguage = targetLang, error = null) }
         val source = currentSourceLanguage()
         if (targetLang == source) {
-            // Reset translations to originals.
             _reader.update { state ->
                 state.copy(verses = state.verses.map { it.copy(translated = null) })
             }
             return
         }
-        _reader.update { it.copy(translating = true) }
         viewModelScope.launch {
             try {
+                _reader.update { it.copy(downloadingModel = true, translating = false) }
+                translator.ensureModel(source, targetLang)
+                _reader.update { it.copy(downloadingModel = false, translating = true) }
+
                 val current = _reader.value.verses
-                val translated = current.map { v ->
-                    val t = translator.translate(v.original, source, targetLang)
-                    v.copy(translated = t)
+                val translated = coroutineScope {
+                    current.map { v ->
+                        async { v.copy(translated = translator.translate(v.original, source, targetLang)) }
+                    }.awaitAll()
                 }
-                _reader.update { it.copy(translating = false, verses = translated) }
+
+                // Guard against the user navigating away mid-translation.
+                if (_reader.value.targetLanguage == targetLang && _reader.value.verses.size == translated.size) {
+                    _reader.update { it.copy(translating = false, verses = translated) }
+                } else {
+                    _reader.update { it.copy(translating = false) }
+                }
             } catch (e: Exception) {
                 _reader.update {
-                    it.copy(translating = false, error = e.message ?: "Translation failed")
+                    it.copy(
+                        downloadingModel = false,
+                        translating = false,
+                        error = e.message ?: "Translation failed",
+                    )
                 }
             }
         }
