@@ -130,15 +130,8 @@ fun ReaderScreen(viewModel: BibleViewModel, onBack: () -> Unit) {
                         ) {
                             item { ChapterHeader(state.bookName, state.chapterNumber) }
                             item {
-                                VerseParagraph(state.verses, translated = false)
-                            }
-                            if (state.verses.any { it.translated != null }) {
-                                item { Spacer(Modifier.height(20.dp)) }
-                                item { TranslationDivider() }
-                                item { Spacer(Modifier.height(16.dp)) }
-                                item {
-                                    VerseParagraph(state.verses, translated = true)
-                                }
+                                val useTranslated = state.verses.firstOrNull()?.translated != null
+                                VerseParagraph(state.verses, useTranslated = useTranslated)
                             }
                             item { Spacer(Modifier.height(32.dp)) }
                         }
@@ -265,15 +258,14 @@ private fun ChapterHeader(bookName: String, chapterNumber: Int) {
 }
 
 @Composable
-private fun VerseParagraph(verses: List<VerseDisplay>, translated: Boolean) {
+private fun VerseParagraph(verses: List<VerseDisplay>, useTranslated: Boolean) {
     if (verses.isEmpty()) return
     val primary = MaterialTheme.colorScheme.primary
-    val text = remember(verses, translated) {
+    val text = remember(verses, useTranslated) {
         buildAnnotatedString {
             verses.forEachIndexed { idx, v ->
-                val body = if (translated) v.translated ?: v.original else v.original
+                val body = if (useTranslated) (v.translated ?: v.original) else v.original
                 if (idx == 0) {
-                    // Drop cap: large first letter for verse 1.
                     val first = body.firstOrNull()?.toString() ?: ""
                     val rest = if (body.isNotEmpty()) body.substring(1) else ""
                     withStyle(
@@ -303,38 +295,9 @@ private fun VerseParagraph(verses: List<VerseDisplay>, translated: Boolean) {
     Text(
         text = text,
         style = MaterialTheme.typography.bodyLarge.copy(
-            fontStyle = if (translated) FontStyle.Italic else FontStyle.Normal,
-            color = if (translated) MaterialTheme.colorScheme.onSurfaceVariant
-            else MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground
         )
     )
-}
-
-@Composable
-private fun TranslationDivider() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.width(50.dp),
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-        )
-        Text(
-            text = "TRANSLATION",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 10.dp)
-        )
-        HorizontalDivider(
-            modifier = Modifier.width(50.dp),
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-        )
-    }
 }
 
 @Composable
