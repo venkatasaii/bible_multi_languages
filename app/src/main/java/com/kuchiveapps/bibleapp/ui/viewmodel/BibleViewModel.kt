@@ -33,11 +33,19 @@ data class ReaderState(
     val chapterCount: Int = 1,
     val totalBooks: Int = 66,
     val verses: List<VerseDisplay> = emptyList(),
+    val sourceLanguage: String = "en",
     val targetLanguage: String = "en",
     val translating: Boolean = false,
     val downloadingModel: Boolean = false,
     val error: String? = null,
-)
+) {
+    /** UI shows a loading placeholder when the user picked a non-source language
+     *  but the per-verse translations haven't arrived yet. */
+    val awaitingTranslation: Boolean
+        get() = targetLanguage != sourceLanguage &&
+                verses.isNotEmpty() &&
+                verses.firstOrNull()?.translated == null
+}
 
 data class VerseDisplay(
     val number: Int,
@@ -95,6 +103,7 @@ class BibleViewModel(
                 chapterCount = book.chapterCount,
                 totalBooks = books.size,
                 verses = emptyList(),
+                sourceLanguage = currentSourceLanguage(),
                 error = null,
             )
         }
@@ -130,17 +139,34 @@ class BibleViewModel(
         repository.versions.first { it.id == _books.value.versionId }.sourceLanguage
 
     fun translateChapter(targetLang: String) {
-        _reader.update { it.copy(targetLanguage = targetLang, error = null) }
         val source = currentSourceLanguage()
         if (targetLang == source) {
+            // Switching back to the source language: clear cached translations so
+            // the original text shows immediately.
             _reader.update { state ->
-                state.copy(verses = state.verses.map { it.copy(translated = null) })
+                state.copy(
+                    targetLanguage = targetLang,
+                    error = null,
+                    verses = state.verses.map { it.copy(translated = null) },
+                )
             }
             return
         }
+        // Switching to a non-source language: clear translations FIRST so neither
+        // the previous language nor the English original briefly shows under the
+        // new language pill. The UI treats verses-with-null-translation as a
+        // loading state whenever targetLanguage != source.
+        _reader.update { state ->
+            state.copy(
+                targetLanguage = targetLang,
+                error = null,
+                verses = state.verses.map { it.copy(translated = null) },
+                downloadingModel = true,
+                translating = false,
+            )
+        }
         viewModelScope.launch {
             try {
-                _reader.update { it.copy(downloadingModel = true, translating = false) }
                 translator.ensureModel(source, targetLang)
                 _reader.update { it.copy(downloadingModel = false, translating = true) }
 

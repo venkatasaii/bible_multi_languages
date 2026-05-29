@@ -129,9 +129,13 @@ fun ReaderScreen(viewModel: BibleViewModel, onBack: () -> Unit) {
                             contentPadding = PaddingValues(horizontal = 26.dp, vertical = 12.dp)
                         ) {
                             item { ChapterHeader(state.bookName, state.chapterNumber) }
-                            item {
-                                val useTranslated = state.verses.firstOrNull()?.translated != null
-                                VerseParagraph(state.verses, useTranslated = useTranslated)
+                            if (state.awaitingTranslation) {
+                                item { TranslationPlaceholder(downloading = state.downloadingModel) }
+                            } else {
+                                item {
+                                    val useTranslated = state.verses.firstOrNull()?.translated != null
+                                    VerseParagraph(state.verses, useTranslated = useTranslated)
+                                }
                             }
                             item { Spacer(Modifier.height(32.dp)) }
                         }
@@ -254,6 +258,29 @@ private fun ChapterHeader(bookName: String, chapterNumber: Int) {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(20.dp))
+    }
+}
+
+@Composable
+private fun TranslationPlaceholder(downloading: Boolean) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 48.dp, bottom = 48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CircularProgressIndicator(
+            color = MaterialTheme.colorScheme.primary,
+            strokeWidth = 3.dp
+        )
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = stringResource(
+                if (downloading) R.string.downloading_language else R.string.translating
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
 
